@@ -27,7 +27,7 @@ class QDot(QtWidgets.QLabel):
         self.setFixedHeight(9)
         self.move(position.x()-5, position.y()-5)
         self.setStyleSheet('''background-color: {};
-                              font: 7pt "HelveticaNeue";
+                              font: 7pt "Verdana";
                               color: rgb(255, 255, 255);'''.format('rgb'+str(self.color.getRgb())))
 
     def mousePressEvent(self, event):
@@ -57,13 +57,12 @@ class QDot(QtWidgets.QLabel):
         if color.isValid():
             self.color = color
             self.setStyleSheet('''background-color: {};
-                                  font: 7pt "HelveticaNeue";
+                                  font: 7pt "Verdana";
                                   color: rgb(255, 255, 255);'''.format('rgb'+str(self.color.getRgb())))
 
     def mouseMoveEvent(self, event):
         self.__parent.coords_label.setText("({}, {})".format(self.pos().x(), self.pos().y()))
         if self.__move:
-            j = event.pos()
             self.move(self.mapToParent(event.pos()))
             self.raise_()
 

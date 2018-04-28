@@ -2,16 +2,24 @@
 """
 Created on Fri Dec 22 14:52:46 2017
 
-@author: noname
+This file contains main algorithm for calculating a point coordinates according to given rules of Chaos Game method.
+
+@author: Dyma Volodymyr Sergiyovoich
 """
 import random as r
 
-
 prevVer1 = 0
-prevVer2 = 0
 
 
 class Fractal:
+    """Fractal class
+
+    This class is used to calculating a point coordinates according to given rules.
+
+    :param x and y: are coordinates of the last placed point.
+    :param vertexes: is a dictionary of the vertexes available for moving to
+    :param allowed: is a list of allowed gaps between the previously chosen vertex and currently chosen one
+    """
     def __init__(self, x, y, vertexes, allowed):
         # print('Hola')
         self.x = x+4
@@ -23,9 +31,15 @@ class Fractal:
         self.draw()
 
     def coordinates(self):
+        """Returns coordinates and a chosen vertex
+
+        :return: list of x coord, y coord and currently chosen vertex object
+        """
         return self.x, self.y, self.vertexes[prevVer1]
 
     def draw(self):
+        """Calculates coords to move to
+        """
         global prevVer1
         while True:
             t = r.SystemRandom().choice(self.verList)
@@ -34,10 +48,21 @@ class Fractal:
                 t = self.vertexes[t]
                 break
         x, y = t.pos().x(), t.pos().y()
-        self.x, self.y = mid_point(self.x, self.y, x, y, 1)
+        self.x, self.y = self.mid_point(self.x, self.y, x, y, 1)
 
+    @staticmethod
+    def mid_point(x1, y1, x2, y2, k):
+        """Calculate a midpoint
 
-def mid_point(x1, y1, x2, y2, k):
-    x = (x1 + x2*k) / (1 + k)
-    y = (y1 + y2*k) / (1 + k)
-    return int(round(x)), int(round(y))
+        This method calculate a midpoint between two given points.
+
+        :param x1: x coord of the first point
+        :param y1: y coord of the second point
+        :param x2: x coord of the first point
+        :param y2: y coord of the second point
+        :param k: relation ratio
+        :return: list of two integers representing coordinates of midpoint
+        """
+        x = (x1 + x2*k) / (1 + k)
+        y = (y1 + y2*k) / (1 + k)
+        return int(round(x)), int(round(y))

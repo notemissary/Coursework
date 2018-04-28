@@ -2,7 +2,9 @@
 """
 Created on Mon Dec 25 23:21:47 2017
 
-@author: noname
+This file contains realization of GUI for the Chaos Game method.
+
+@author: Dyma Volodymyr Sergiyovoich
 """
 import sys
 from PyQt5 import QtWidgets, QtGui, QtCore, uic
@@ -10,11 +12,16 @@ import model as m
 import data_rc
 
 k = 0
-filename = 'V_log.txt'
-sys.stderr = open(filename, 'w')
 
 
 class QDot(QtWidgets.QLabel):
+    """QDot class
+
+    This class is used for placing dragable dots which are used either as vertecies or an initial point
+
+    :param position: position where to place the dot
+    :param parent: parent of the given QObject
+    """
     def __init__(self, position, parent=None):
         super().__init__(parent)
         self.__parent = parent
@@ -50,9 +57,17 @@ class QDot(QtWidgets.QLabel):
             menu.show()
 
     def self_delete(self):
+        """Delete dot
+
+        Calls parent's del_dot method
+        """
         self.__parent.del_dot(self)
 
     def set_color(self):
+        """Dot color
+
+        Set currently chosen dot color
+        """
         color = QtWidgets.QColorDialog.getColor()
         if color.isValid():
             self.color = color
@@ -74,6 +89,13 @@ class QDot(QtWidgets.QLabel):
 
 
 class GUI(QtWidgets.QMainWindow):
+    """GUI class
+
+    This is the main window of the application. It controls all the interactions with the user and represents
+    information.
+
+    :param parent: parent of the given QObject
+    """
     def __init__(self, parent=None):
         super().__init__(parent)
         self.dotSize = None
@@ -109,6 +131,12 @@ class GUI(QtWidgets.QMainWindow):
         self.radio = list()
 
     def del_dot(self, dot):
+        """Delete dot
+
+        Deletes a given QDot object and cleans up after. Shifts numbering of the other dots.
+
+        :param dot: QDot object
+        """
         global k
         for i in self.vertexes.keys():
             if self.vertexes[i] == dot:
@@ -124,15 +152,29 @@ class GUI(QtWidgets.QMainWindow):
         self.coords_label.setText('')
 
     def hide_group_box(self, b):
+        """Hides group box
+
+        :param b: checkbox value of the QGroupBox object
+        """
         if b:
             self.groupBox.setFixedHeight(211)
         else:
             self.groupBox.setFixedHeight(18)
 
     def no_event(self, *args):
+        """Pass event
+
+        This is an event that literally does nothing if its needs to be done.
+
+        :param args: anything
+        """
         pass
 
     def stop(self):
+        """Stop running
+
+        Stops the running algorithm and cleans up the working area
+        """
         global k
         k = 0
         for i in self.vertexes:
@@ -154,12 +196,21 @@ class GUI(QtWidgets.QMainWindow):
         self.spinBox.setValue(0)
 
     def pause(self):
+        """Pause running"""
         self.pauseFlag = True
 
     def speed_change(self):
+        """Change running speed
+
+        Changes the speed of the algorithm.
+        """
         self.speed_label.setText(str(self.speed.value())+'%')
 
     def start(self):
+        """Start algorithm
+
+        Starts algorithm of Chaos Game method.
+        """
         if self.lineEdit.text():
             allowed_vertexes = list(map(int, self.lineEdit.text().split(',')))
         else:

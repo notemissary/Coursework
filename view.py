@@ -135,14 +135,20 @@ class GUI(QtWidgets.QMainWindow):
         self.A = QtWidgets.QLabel()
         self.figure = None
         self.show()
+        self.spinBox.valueChanged.connect(self.spin_box_value)
         self.startButton.clicked.connect(self.start)
         self.speed.valueChanged.connect(self.speed_change)
         self.pauseButton.clicked.connect(self.pause)
         self.stopButton.clicked.connect(self.stop)
         self.groupBox.toggled.connect(self.hide_group_box)
         self.radio = list()
-        self.end_val = False
+        self.end_val = 0
         self.spinBox.endless = True
+
+    def spin_box_value(self, val):
+        if not self.runningFlag:
+            self.end_val = self.spinBox.value()
+            self.spinBox.endless = False
 
     def del_dot(self, dot):
         """Delete dot
@@ -245,15 +251,11 @@ class GUI(QtWidgets.QMainWindow):
             self.pen = True
             self.loop = QtCore.QEventLoop()
             i = -1
-            if self.spinBox.endless:
-                if self.spinBox.value() and not self.pauseFlag and not self.end_val:
-                    self.spinBox.endless = False
-                    self.end_val = self.spinBox.value()
-                    i = 0
+            if not self.spinBox.endless:
+                i = 0
             self.posit = self.point.pos()
             self.runningFlag = True
-            print(self.end_val)
-            while self.spinBox.endless or i < self.end_val:
+            while i < self.end_val:
                 QtCore.QTimer.singleShot((1000 // self.speed.value())-10, self.loop.quit)
                 self.loop.exec_()
                 if self.pauseFlag:

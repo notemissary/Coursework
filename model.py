@@ -6,7 +6,7 @@ This file contains main algorithm for calculating a point coordinates according 
 
 @author: Dyma Volodymyr Sergiyovoich
 """
-import random as r
+import secrets as s
 
 prevVer1 = 0
 
@@ -24,8 +24,8 @@ class Fractal:
         assert isinstance(x, int) and isinstance(y, int), 'x and y type must be integer'
         assert isinstance(vertexes, dict), 'vertexes type must be dict'
         assert isinstance(allowed, list), 'allowed type must be list'
-        self.x = x+4
-        self.y = y+4
+        self.x = x + 4
+        self.y = y + 4
         self.allowed = allowed
         self.vertexes = vertexes
         self.verList = list(self.vertexes.keys())
@@ -44,7 +44,7 @@ class Fractal:
         """
         global prevVer1
         while True:
-            t = r.SystemRandom().choice(self.verList)
+            t = s.choice(self.verList)
             if abs(t - prevVer1) in self.allowed:
                 prevVer1 = t
                 t = self.vertexes[t]

@@ -221,6 +221,7 @@ class GUI(QtWidgets.QMainWindow):
         self.spinBox.setValue(0)
         self.end_val = 0
         self.spinBox.endless = True
+        m.prevVer1 = 0
 
     def pause(self):
         """Pause running"""

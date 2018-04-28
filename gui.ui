@@ -17,11 +17,11 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>LulzChaos</string>
+   <string>Chaos Game</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>../../../../Temp/FatCow_Icons16x16/yahoo_messenger.png</normaloff>../../../../Temp/FatCow_Icons16x16/yahoo_messenger.png</iconset>
+   <iconset resource="data.qrc">
+    <normaloff>:/data/240px-Chaosphere.svg.png</normaloff>:/data/240px-Chaosphere.svg.png</iconset>
   </property>
   <property name="windowOpacity">
    <double>1.000000000000000</double>

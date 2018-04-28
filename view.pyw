@@ -239,6 +239,8 @@ class GUI(QtWidgets.QMainWindow):
 
         Starts algorithm of Chaos Game method.
         """
+        if self.status_label.text() != 'Ready':
+            return
         self.textEdit_3.hide()
         if self.textEdit_4.first_time:
             self.textEdit_4.first_time = False
@@ -316,6 +318,12 @@ class GUI(QtWidgets.QMainWindow):
                     self.textEdit_2.first_time = False
                     self.textEdit_2.show()
                 if self.lineEdit.text():
+                    t = self.lineEdit.text().split(',')
+                    try:
+                        if not all(map(lambda x: 0 <= int(x) < 6, t)):
+                            return
+                    except ValueError:
+                        return
                     self.textEdit_2.hide()
                     if self.textEdit_3.first_time:
                         self.textEdit_3.first_time = False

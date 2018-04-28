@@ -24,6 +24,7 @@ class QDot(QtWidgets.QLabel):
     """
     def __init__(self, position, parent=None):
         super().__init__(parent)
+        assert isinstance(position, QtCore.QPoint), 'position must be QtCore.QPoint object'
         self.__parent = parent
         self.__move = False
         self.setText('')
@@ -101,10 +102,17 @@ class GUI(QtWidgets.QMainWindow):
         self.dotSize = None
         self.posit = None
         uic.loadUi('gui.ui', self)
+        self.textEdit_2.hide()
+        self.textEdit_3.hide()
+        self.textEdit_4.hide()
+        self.textEdit_2.first_time = True
+        self.textEdit_3.first_time = True
+        self.textEdit_4.first_time = True
         self.vertexes = dict()
         self.ver_label = QtWidgets.QLabel("Vertexes: {}".format(len(self.vertexes.keys())), self)
         self.status_label = QtWidgets.QLabel("Not ready", self)
         self.coords_label = QtWidgets.QLabel('', self)
+        self.coords_label.setStyleSheet("color: white;")
         self.statusbar.addWidget(self.status_label, 2)
         self.statusbar.addWidget(self.coords_label, 1)
         self.statusbar.addPermanentWidget(self.ver_label, 1)
@@ -129,6 +137,7 @@ class GUI(QtWidgets.QMainWindow):
         self.stopButton.clicked.connect(self.stop)
         self.groupBox.toggled.connect(self.hide_group_box)
         self.radio = list()
+        self.end_val = False
 
     def del_dot(self, dot):
         """Delete dot
@@ -137,6 +146,7 @@ class GUI(QtWidgets.QMainWindow):
 
         :param dot: QDot object
         """
+        assert isinstance(dot, QDot), 'dot type must be QDot object'
         global k
         for i in self.vertexes.keys():
             if self.vertexes[i] == dot:
@@ -156,6 +166,7 @@ class GUI(QtWidgets.QMainWindow):
 
         :param b: checkbox value of the QGroupBox object
         """
+        assert isinstance(b, bool), 'b type must be bool'
         if b:
             self.groupBox.setFixedHeight(211)
         else:
@@ -182,7 +193,7 @@ class GUI(QtWidgets.QMainWindow):
         self.vertexes.clear()
         self.dotSize = None
         self.posit = None
-        self.pauseFlag = True
+        self.pause()
         self.runningFlag = False
         self.pen = True
         self.point.deleteLater()
@@ -194,10 +205,12 @@ class GUI(QtWidgets.QMainWindow):
         self.plt.setBrush(self.plt.Window, QtGui.QBrush(self.oImage))
         self.setPalette(self.plt)
         self.spinBox.setValue(0)
+        self.end_val = 0
 
     def pause(self):
         """Pause running"""
         self.pauseFlag = True
+        self.textEdit_4.hide()
 
     def speed_change(self):
         """Change running speed
@@ -211,23 +224,27 @@ class GUI(QtWidgets.QMainWindow):
 
         Starts algorithm of Chaos Game method.
         """
+        self.textEdit_3.hide()
+        if self.textEdit_4.first_time:
+            self.textEdit_4.first_time = False
+            self.textEdit_4.show()
         if self.lineEdit.text():
             allowed_vertexes = list(map(int, self.lineEdit.text().split(',')))
         else:
             allowed_vertexes = [0]
         if isinstance(self.point, QDot):
+            if self.pauseFlag:
+                self.pauseFlag = False
             self.dotSize = 1
             self.pen = True
-            self.runningFlag = True
             self.loop = QtCore.QEventLoop()
             i = -1
-            end_val = 0
-            if self.spinBox.value() and not self.pauseFlag:
-                end_val = self.spinBox.value()
+            if self.spinBox.value() and not self.pauseFlag and not self.end_val:
+                self.end_val = self.spinBox.value()
                 i = 0
             self.posit = self.point.pos()
-            self.pauseFlag = False
-            while i < end_val:
+            print(self.end_val)
+            while i < self.end_val:
                 QtCore.QTimer.singleShot((1000 // self.speed.value())-10, self.loop.quit)
                 self.loop.exec_()
                 if self.pauseFlag:
@@ -236,7 +253,7 @@ class GUI(QtWidgets.QMainWindow):
                 self.posit = QtCore.QPoint(x, y)
                 self.color = ver.color
                 self.update()
-                if end_val:
+                if self.end_val:
                     self.spinBox.setValue(self.spinBox.value()-1)
                     i += 1
                 else:
@@ -269,7 +286,7 @@ class GUI(QtWidgets.QMainWindow):
         qp = QtGui.QPainter(self.oImage)
         qp.setRenderHint(QtGui.QPainter.Antialiasing)
         if self.color:
-            self.color.setAlpha(85)
+            self.color.setAlpha(100)
             pen = QtGui.QPen(self.color)
             qp.setPen(pen)
             qp.drawPoint(self.posit)
@@ -281,9 +298,18 @@ class GUI(QtWidgets.QMainWindow):
         self.status_label.setStyleSheet("color: red;")
         if len(self.vertexes.keys()) > 2:
             self.ver_label.setStyleSheet("color: green;")
-            if isinstance(self.point, QDot) and self.lineEdit.text():
-                self.status_label.setText('Ready')
-                self.status_label.setStyleSheet("color: green;")
+            if isinstance(self.point, QDot):
+                self.textEdit.hide()
+                if self.textEdit_2.first_time:
+                    self.textEdit_2.first_time = False
+                    self.textEdit_2.show()
+                if self.lineEdit.text():
+                    self.textEdit_2.hide()
+                    if self.textEdit_3.first_time:
+                        self.textEdit_3.first_time = False
+                        self.textEdit_3.show()
+                    self.status_label.setText('Ready')
+                    self.status_label.setStyleSheet("color: green;")
 
 
 if __name__ == '__main__':

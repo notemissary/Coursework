@@ -21,7 +21,9 @@ class Fractal:
     :param allowed: is a list of allowed gaps between the previously chosen vertex and currently chosen one
     """
     def __init__(self, x, y, vertexes, allowed):
-        # print('Hola')
+        assert isinstance(x, int) and isinstance(y, int), 'x and y type must be integer'
+        assert isinstance(vertexes, dict), 'vertexes type must be dict'
+        assert isinstance(allowed, list), 'allowed type must be list'
         self.x = x+4
         self.y = y+4
         self.allowed = allowed
@@ -63,6 +65,9 @@ class Fractal:
         :param k: relation ratio
         :return: list of two integers representing coordinates of midpoint
         """
+        assert isinstance(x1, int) and isinstance(x2, int) and isinstance(y1, int) and isinstance(y1, int), \
+            'x1, y1, x2, y2 types must be integer'
+        assert isinstance(k, int), 'k type must be integer'
         x = (x1 + x2*k) / (1 + k)
         y = (y1 + y2*k) / (1 + k)
         return int(round(x)), int(round(y))

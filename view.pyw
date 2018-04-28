@@ -112,7 +112,6 @@ class GUI(QtWidgets.QMainWindow):
     """
     def __init__(self, parent=None):
         super().__init__(parent, flags=QtCore.Qt.Window)
-        self.dotSize = None
         self.posit = None
         uic.loadUi('gui.ui', self)
         self.textEdit_2.hide()
@@ -131,7 +130,6 @@ class GUI(QtWidgets.QMainWindow):
         self.statusbar.addPermanentWidget(self.ver_label, 1)
         self.pauseFlag = False
         self.runningFlag = False
-        self.pen = True
         self.setFixedSize(self.size())
         self.point = QtCore.QObject()
         self.color = None
@@ -141,8 +139,6 @@ class GUI(QtWidgets.QMainWindow):
         self.plt = QtGui.QPalette()
         self.plt.setBrush(self.plt.Window, QtGui.QBrush(self.oImage))
         self.setPalette(self.plt)
-        self.A = QtWidgets.QLabel()
-        self.figure = None
         self.show()
         self.spinBox.valueChanged.connect(self.spin_box_value)
         self.startButton.clicked.connect(self.start)
@@ -150,7 +146,6 @@ class GUI(QtWidgets.QMainWindow):
         self.pauseButton.clicked.connect(self.pause)
         self.stopButton.clicked.connect(self.stop)
         self.groupBox.toggled.connect(self.hide_group_box)
-        self.radio = list()
         self.end_val = 0
         self.spinBox.endless = True
 
@@ -184,7 +179,7 @@ class GUI(QtWidgets.QMainWindow):
                 del self.vertexes[i]
                 break
         temp = dict()
-        for i, j in enumerate(self.vertexes.keys()):
+        for i, j in enumerate(self.vertexes):
             temp[i] = self.vertexes[j]
             temp[i].setText('{}'.format(i))
         self.vertexes = temp
@@ -202,15 +197,6 @@ class GUI(QtWidgets.QMainWindow):
         else:
             self.groupBox.setFixedHeight(18)
 
-    def no_event(self, *args):
-        """Pass event
-
-        This is an event that literally does nothing if its needs to be done.
-
-        :param args: anything
-        """
-        pass
-
     def stop(self):
         """Stop running
 
@@ -221,11 +207,9 @@ class GUI(QtWidgets.QMainWindow):
         for i in self.vertexes:
             self.vertexes[i].deleteLater()
         self.vertexes.clear()
-        self.dotSize = None
         self.posit = None
         self.pause()
         self.runningFlag = False
-        self.pen = True
         self.point.deleteLater()
         self.point = QtCore.QObject()
         self.color = None
@@ -266,8 +250,6 @@ class GUI(QtWidgets.QMainWindow):
         if isinstance(self.point, QDot):
             if self.pauseFlag:
                 self.pauseFlag = False
-            self.dotSize = 1
-            self.pen = True
             self.loop = QtCore.QEventLoop()
             i = -1
             if not self.spinBox.endless:

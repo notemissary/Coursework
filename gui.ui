@@ -283,6 +283,9 @@ color: rgb(0, 0, 0);</string>
      <property name="value">
       <number>0</number>
      </property>
+     <property name="endless" stdset="0">
+      <string/>
+     </property>
     </widget>
    </widget>
    <widget class="QTextEdit" name="textEdit">

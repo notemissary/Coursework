@@ -39,6 +39,8 @@ class QDot(QtWidgets.QLabel):
                               color: rgb(255, 255, 255);'''.format('rgb'+str(self.color.getRgb())))
 
     def mousePressEvent(self, event):
+        if self.__parent.runningFlag:
+            return
         if event.button() == QtCore.Qt.LeftButton:
             self.__move = True
         elif event.button() == QtCore.Qt.RightButton:
@@ -83,6 +85,8 @@ class QDot(QtWidgets.QLabel):
             self.raise_()
 
     def mouseReleaseEvent(self, event):
+        if self.__parent.runningFlag:
+            return
         self.__move = False
         if not (0 <= self.pos().x() <= self.__parent.width()
                 and 0 <= self.pos().y() <= self.__parent.height()-20):
@@ -138,6 +142,7 @@ class GUI(QtWidgets.QMainWindow):
         self.groupBox.toggled.connect(self.hide_group_box)
         self.radio = list()
         self.end_val = False
+        self.spinBox.endless = True
 
     def del_dot(self, dot):
         """Delete dot
@@ -206,6 +211,7 @@ class GUI(QtWidgets.QMainWindow):
         self.setPalette(self.plt)
         self.spinBox.setValue(0)
         self.end_val = 0
+        self.spinBox.endless = True
 
     def pause(self):
         """Pause running"""
@@ -239,12 +245,15 @@ class GUI(QtWidgets.QMainWindow):
             self.pen = True
             self.loop = QtCore.QEventLoop()
             i = -1
-            if self.spinBox.value() and not self.pauseFlag and not self.end_val:
-                self.end_val = self.spinBox.value()
-                i = 0
+            if self.spinBox.endless:
+                if self.spinBox.value() and not self.pauseFlag and not self.end_val:
+                    self.spinBox.endless = False
+                    self.end_val = self.spinBox.value()
+                    i = 0
             self.posit = self.point.pos()
+            self.runningFlag = True
             print(self.end_val)
-            while i < self.end_val:
+            while self.spinBox.endless or i < self.end_val:
                 QtCore.QTimer.singleShot((1000 // self.speed.value())-10, self.loop.quit)
                 self.loop.exec_()
                 if self.pauseFlag:
@@ -253,11 +262,11 @@ class GUI(QtWidgets.QMainWindow):
                 self.posit = QtCore.QPoint(x, y)
                 self.color = ver.color
                 self.update()
-                if self.end_val:
-                    self.spinBox.setValue(self.spinBox.value()-1)
-                    i += 1
+                if self.spinBox.endless:
+                    self.spinBox.setValue(self.spinBox.value() + 1)
                 else:
-                    self.spinBox.setValue(self.spinBox.value()+1)
+                    self.spinBox.setValue(self.spinBox.value() - 1)
+                    i += 1
 
     def mousePressEvent(self, e):
         if self.runningFlag or \

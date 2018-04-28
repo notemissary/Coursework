@@ -55,11 +55,9 @@ class QDot(QtWidgets.QLabel):
         elif event.button() == QtCore.Qt.RightButton:
             menu = QtWidgets.QMenu(self.__parent)
             action_color = QtWidgets.QAction('Color', self)
-            action_color.triggered.connect(self.set_color)
             menu.addAction(action_color)
             menu.addSeparator()
             action_delete = QtWidgets.QAction('Delete', self)
-            action_delete.triggered.connect(self.self_delete)
             menu.addAction(action_delete)
             global_cursor_pos = QtGui.QCursor().pos()
             mouse_screen = app.desktop().screenNumber(global_cursor_pos)
@@ -67,6 +65,8 @@ class QDot(QtWidgets.QLabel):
             local_cursor_pos = global_cursor_pos - mouse_screen_geometry.topLeft()
             menu.move(local_cursor_pos)
             menu.show()
+            action_color.triggered.connect(self.set_color)
+            action_delete.triggered.connect(self.self_delete)
 
     def self_delete(self):
         """Delete dot
@@ -80,7 +80,7 @@ class QDot(QtWidgets.QLabel):
 
         Set currently chosen dot color
         """
-        color = QtWidgets.QColorDialog.getColor()
+        color = QtWidgets.QColorDialog().getColor(initial=QtCore.Qt.white, parent=self.__parent)
         if color.isValid():
             self.color = color
             self.setStyleSheet('''background-color: {};
@@ -111,7 +111,7 @@ class GUI(QtWidgets.QMainWindow):
     :param parent: parent of the given QObject
     """
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(parent, flags=QtCore.Qt.Window)
         self.dotSize = None
         self.posit = None
         uic.loadUi('gui.ui', self)
@@ -155,9 +155,19 @@ class GUI(QtWidgets.QMainWindow):
         self.spinBox.endless = True
 
     def spin_box_value(self, val):
+        """Track changing spinBox value
+
+        This method tracks changing the spin box value to decide if it should run until it reaches the given value
+
+        :param val: value of the spinBox
+        """
         if not self.runningFlag:
-            self.end_val = self.spinBox.value()
-            self.spinBox.endless = False
+            if val != 0:
+                self.end_val = self.spinBox.value()
+                self.spinBox.endless = False
+            else:
+                self.end_val = 0
+                self.spinBox.endless = True
 
     def del_dot(self, dot):
         """Delete dot

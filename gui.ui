@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="data.qrc">
-    <normaloff>:/data/240px-Chaosphere.svg.png</normaloff>:/data/240px-Chaosphere.svg.png</iconset>
+    <normaloff>:/data/icon</normaloff>:/data/icon</iconset>
   </property>
   <property name="windowOpacity">
    <double>1.000000000000000</double>

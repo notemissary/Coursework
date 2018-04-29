@@ -112,8 +112,12 @@ class GUI(QtWidgets.QMainWindow):
     """
     def __init__(self, parent=None):
         super().__init__(parent, flags=QtCore.Qt.Window)
-        self.posit = None
         uic.loadUi('gui.ui', self)
+        self.setFixedSize(self.size())
+        self.textEdit.viewport().setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.textEdit_2.viewport().setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.textEdit_3.viewport().setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.textEdit_4.viewport().setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.textEdit_2.hide()
         self.textEdit_3.hide()
         self.textEdit_4.hide()
@@ -128,9 +132,11 @@ class GUI(QtWidgets.QMainWindow):
         self.statusbar.addWidget(self.status_label, 2)
         self.statusbar.addWidget(self.coords_label, 1)
         self.statusbar.addPermanentWidget(self.ver_label, 1)
+        self.posit = None
+        self.end_val = 0
+        self.spinBox.endless = True
         self.pauseFlag = False
         self.runningFlag = False
-        self.setFixedSize(self.size())
         self.point = QtCore.QObject()
         self.color = None
         self.loop = QtCore.QEventLoop()
@@ -146,8 +152,6 @@ class GUI(QtWidgets.QMainWindow):
         self.pauseButton.clicked.connect(self.pause)
         self.stopButton.clicked.connect(self.stop)
         self.groupBox.toggled.connect(self.hide_group_box)
-        self.end_val = 0
-        self.spinBox.endless = True
 
     def spin_box_value(self, val):
         """Track changing spinBox value
@@ -301,7 +305,7 @@ class GUI(QtWidgets.QMainWindow):
         qp = QtGui.QPainter(self.oImage)
         qp.setRenderHint(QtGui.QPainter.Antialiasing)
         if self.color:
-            self.color.setAlpha(100)
+            self.color.setAlpha(63)
             pen = QtGui.QPen(self.color)
             qp.setPen(pen)
             qp.drawPoint(self.posit)

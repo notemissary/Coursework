@@ -128,7 +128,8 @@ class GUI(QtWidgets.QMainWindow):
         self.ver_label = QtWidgets.QLabel("Vertexes: {}".format(len(self.vertexes.keys())), self)
         self.status_label = QtWidgets.QLabel("Not ready", self)
         self.coords_label = QtWidgets.QLabel('', self)
-        self.coords_label.setStyleSheet("color: white;")
+        self.coords_label.setStyleSheet("""color: white;
+                                           font: 10pt "Verdana";""")
         self.statusbar.addWidget(self.status_label, 2)
         self.statusbar.addWidget(self.coords_label, 1)
         self.statusbar.addPermanentWidget(self.ver_label, 1)
@@ -317,12 +318,15 @@ class GUI(QtWidgets.QMainWindow):
             self.plt.setBrush(self.plt.Window, QtGui.QBrush(self.oImage))
             self.setPalette(self.plt)
         self.ver_label.setText("Vertexes: {}".format(len(self.vertexes.keys())))
-        self.ver_label.setStyleSheet("color: red")
+        self.ver_label.setStyleSheet("""color: red;
+                                     font: 10pt "Verdana";""")
         self.ready = False
         self.status_label.setText("Not ready")
-        self.status_label.setStyleSheet("color: red;")
+        self.status_label.setStyleSheet("""color: red;
+                                           font: 10pt "Verdana";""")
         if len(self.vertexes.keys()) > 2:
-            self.ver_label.setStyleSheet("color: green;")
+            self.ver_label.setStyleSheet("""color: green;
+                                            font: 10pt "Verdana";""")
             if isinstance(self.point, QDot):
                 self.textEdit.hide()
                 if self.textEdit_2.first_time:
@@ -340,7 +344,8 @@ class GUI(QtWidgets.QMainWindow):
                                 self.textEdit_3.show()
                             self.ready = True
                             self.status_label.setText('Ready')
-                            self.status_label.setStyleSheet("color: green;")
+                            self.status_label.setStyleSheet("""color: green;
+                                                               font: 10pt "Verdana";""")
                     except ValueError:
                         return
 

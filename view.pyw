@@ -212,6 +212,8 @@ class GUI(QtWidgets.QMainWindow):
         for i in self.vertexes:
             self.vertexes[i].deleteLater()
         self.vertexes.clear()
+        self.spinBox.setDisabled(False)
+        self.lineEdit.setDisabled(False)
         self.posit = None
         self.pause()
         self.runningFlag = False
@@ -248,6 +250,8 @@ class GUI(QtWidgets.QMainWindow):
         if not self.ready:
             return
         self.textEdit_3.hide()
+        self.spinBox.setDisabled(True)
+        self.lineEdit.setDisabled(True)
         if self.textEdit_4.first_time:
             self.textEdit_4.first_time = False
             self.textEdit_4.show()

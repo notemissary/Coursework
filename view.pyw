@@ -132,6 +132,7 @@ class GUI(QtWidgets.QMainWindow):
         self.statusbar.addWidget(self.status_label, 2)
         self.statusbar.addWidget(self.coords_label, 1)
         self.statusbar.addPermanentWidget(self.ver_label, 1)
+        self.ready = False
         self.posit = None
         self.end_val = 0
         self.spinBox.endless = True
@@ -244,7 +245,7 @@ class GUI(QtWidgets.QMainWindow):
 
         Starts algorithm of Chaos Game method.
         """
-        if self.status_label.text() != 'Ready':
+        if not self.ready:
             return
         self.textEdit_3.hide()
         if self.textEdit_4.first_time:
@@ -313,6 +314,7 @@ class GUI(QtWidgets.QMainWindow):
             self.setPalette(self.plt)
         self.ver_label.setText("Vertexes: {}".format(len(self.vertexes.keys())))
         self.ver_label.setStyleSheet("color: red")
+        self.ready = False
         self.status_label.setText("Not ready")
         self.status_label.setStyleSheet("color: red;")
         if len(self.vertexes.keys()) > 2:
@@ -327,14 +329,16 @@ class GUI(QtWidgets.QMainWindow):
                     try:
                         if not all(map(lambda x: 0 <= int(x) < 6, t)):
                             return
+                        else:
+                            self.textEdit_2.hide()
+                            if self.textEdit_3.first_time:
+                                self.textEdit_3.first_time = False
+                                self.textEdit_3.show()
+                            self.ready = True
+                            self.status_label.setText('Ready')
+                            self.status_label.setStyleSheet("color: green;")
                     except ValueError:
                         return
-                    self.textEdit_2.hide()
-                    if self.textEdit_3.first_time:
-                        self.textEdit_3.first_time = False
-                        self.textEdit_3.show()
-                    self.status_label.setText('Ready')
-                    self.status_label.setStyleSheet("color: green;")
 
 
 if __name__ == '__main__':

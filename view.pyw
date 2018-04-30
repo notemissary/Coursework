@@ -248,7 +248,7 @@ class GUI(QtWidgets.QMainWindow):
 
         Starts algorithm of Chaos Game method.
         """
-        if not self.ready or self.runningFlag:
+        if not self.ready or (self.runningFlag and not self.pauseFlag):
             return
         self.textEdit_3.hide()
         self.spinBox.setDisabled(True)

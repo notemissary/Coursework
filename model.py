@@ -28,8 +28,6 @@ class Fractal:
         self.y = y + 4
         self.allowed = allowed
         self.vertexes = vertexes
-        self.verList = list(self.vertexes.keys())
-        self.flag = False
         self.draw()
 
     def coordinates(self):
@@ -44,16 +42,16 @@ class Fractal:
         """
         global prevVer1
         while True:
-            t = s.choice(self.verList)
+            t = s.choice(list(self.vertexes.keys()))
             if abs(t - prevVer1) in self.allowed:
                 prevVer1 = t
                 t = self.vertexes[t]
                 break
         x, y = t.pos().x(), t.pos().y()
-        self.x, self.y = self.mid_point(self.x, self.y, x, y, 1)
+        self.x, self.y = self.mid_point(self.x, self.y, x, y)
 
     @staticmethod
-    def mid_point(x1, y1, x2, y2, k):
+    def mid_point(x1, y1, x2, y2, k=1):
         """Calculate a midpoint
 
         This method calculate a midpoint between two given points.

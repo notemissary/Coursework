@@ -20,14 +20,16 @@ class Fractal:
     :param vertexes: is a dictionary of the vertexes available for moving to
     :param allowed: is a list of allowed gaps between the previously chosen vertex and currently chosen one
     """
-    def __init__(self, x, y, vertexes, allowed):
+    def __init__(self, x, y, vertexes, allowed, relation):
         assert isinstance(x, int) and isinstance(y, int), 'x and y type must be integer'
         assert isinstance(vertexes, dict), 'vertexes type must be dict'
         assert isinstance(allowed, list), 'allowed type must be list'
+        assert isinstance(relation, float), 'relation type must be float'
         self.x = x + 4
         self.y = y + 4
         self.allowed = allowed
         self.vertexes = vertexes
+        self.relation = relation
         self.draw()
 
     def coordinates(self):
@@ -48,10 +50,10 @@ class Fractal:
                 t = self.vertexes[t]
                 break
         x, y = t.pos().x(), t.pos().y()
-        self.x, self.y = self.mid_point(self.x, self.y, x, y)
+        self.x, self.y = self.mid_point(self.x, self.y, x, y, self.relation)
 
     @staticmethod
-    def mid_point(x1, y1, x2, y2, k=1):
+    def mid_point(x1, y1, x2, y2, k):
         """Calculate a midpoint
 
         This method calculate a midpoint between two given points.
@@ -65,7 +67,7 @@ class Fractal:
         """
         assert isinstance(x1, int) and isinstance(x2, int) and isinstance(y1, int) and isinstance(y1, int), \
             'x1, y1, x2, y2 types must be integer'
-        assert isinstance(k, int), 'k type must be integer'
+        assert isinstance(k, float), 'k type must be float'
         x = (x1 + x2*k) / (1 + k)
         y = (y1 + y2*k) / (1 + k)
         return int(round(x)), int(round(y))

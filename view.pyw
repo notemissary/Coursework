@@ -215,6 +215,7 @@ class GUI(QtWidgets.QMainWindow):
         self.vertexes.clear()
         self.spinBox.setDisabled(False)
         self.lineEdit.setDisabled(False)
+        self.lineEdit_2.setDisabled(False)
         self.posit = None
         self.pause()
         self.runningFlag = False
@@ -253,13 +254,13 @@ class GUI(QtWidgets.QMainWindow):
         self.textEdit_3.hide()
         self.spinBox.setDisabled(True)
         self.lineEdit.setDisabled(True)
+        self.lineEdit_2.setDisabled(True)
         if self.textEdit_4.first_time:
             self.textEdit_4.first_time = False
             self.textEdit_4.show()
-        if self.lineEdit.text():
-            allowed_vertexes = list(map(int, self.lineEdit.text().split(',')))
-        else:
-            allowed_vertexes = [0]
+        allowed_vertexes = list(map(int, self.lineEdit.text().split(',')))
+        r1, r2 = tuple(map(int, self.lineEdit_2.text().split(':')))
+        relation = r1 / r2
         if isinstance(self.point, QDot):
             if self.pauseFlag:
                 self.pauseFlag = False
@@ -274,7 +275,8 @@ class GUI(QtWidgets.QMainWindow):
                 self.loop.exec_()
                 if self.pauseFlag:
                     break
-                x, y, ver = m.Fractal(self.posit.x(), self.posit.y(), self.vertexes, allowed_vertexes).coordinates()
+                x, y, ver = m.Fractal(self.posit.x(), self.posit.y(), self.vertexes,
+                                      allowed_vertexes, relation).coordinates()
                 self.posit = QtCore.QPoint(x, y)
                 self.color = ver.color
                 self.update()
@@ -311,7 +313,6 @@ class GUI(QtWidgets.QMainWindow):
         qp = QtGui.QPainter(self.oImage)
         qp.setRenderHint(QtGui.QPainter.Antialiasing)
         if self.color:
-            self.color.setAlpha(63)
             pen = QtGui.QPen(self.color)
             qp.setPen(pen)
             qp.drawPoint(self.posit)
@@ -320,11 +321,11 @@ class GUI(QtWidgets.QMainWindow):
         self.ver_label.setText("Vertexes: {}".format(len(self.vertexes.keys())))
         self.ver_label.setStyleSheet("""color: red;
                                      font: 10pt "Verdana";""")
-        self.ready = False
         self.status_label.setText("Not ready")
         self.status_label.setStyleSheet("""color: red;
                                            font: 10pt "Verdana";""")
-        if len(self.vertexes.keys()) > 2:
+        if not self.runningFlag and len(self.vertexes.keys()) > 2:
+            self.ready = False
             self.ver_label.setStyleSheet("""color: green;
                                             font: 10pt "Verdana";""")
             if isinstance(self.point, QDot):
@@ -332,10 +333,13 @@ class GUI(QtWidgets.QMainWindow):
                 if self.textEdit_2.first_time:
                     self.textEdit_2.first_time = False
                     self.textEdit_2.show()
-                if self.lineEdit.text():
-                    t = self.lineEdit.text().split(',')
+                if self.lineEdit.text() and self.lineEdit_2.text():
+                    t1 = self.lineEdit.text().split(',')
+                    t2 = self.lineEdit_2.text().split(':')
                     try:
-                        if not all(map(lambda x: 0 <= int(x) < 6, t)):
+                        t2 = list(map(lambda x: 0 < int(x), t2))
+                        if not ((all(map(lambda x: 0 <= int(x) < 6, t1))
+                                or all(t2)) and len(t2) == 2):
                             return
                         else:
                             self.textEdit_2.hide()

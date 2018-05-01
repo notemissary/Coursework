@@ -26,7 +26,7 @@ k = 0
 class QDot(QtWidgets.QLabel):
     """QDot class
 
-    This class is used for placing dragable dots which are used either as vertecies or an initial point
+    This class is used for placing draggable dots which are used either as vertices or an initial point
 
     :param position: position where to place the dot
     :param parent: parent of the given QObject
@@ -113,7 +113,6 @@ class GUI(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent, flags=QtCore.Qt.Window)
         uic.loadUi('gui.ui', self)
-        self.setFixedSize(self.size())
         self.textEdit.viewport().setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.textEdit_2.viewport().setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.textEdit_3.viewport().setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
@@ -125,7 +124,7 @@ class GUI(QtWidgets.QMainWindow):
         self.textEdit_3.first_time = True
         self.textEdit_4.first_time = True
         self.vertexes = dict()
-        self.ver_label = QtWidgets.QLabel("Vertexes: {}".format(len(self.vertexes.keys())), self)
+        self.ver_label = QtWidgets.QLabel("Vertices: {}".format(len(self.vertexes.keys())), self)
         self.status_label = QtWidgets.QLabel("Not ready", self)
         self.coords_label = QtWidgets.QLabel('', self)
         self.coords_label.setStyleSheet("""color: white;
@@ -133,6 +132,7 @@ class GUI(QtWidgets.QMainWindow):
         self.statusbar.addWidget(self.status_label, 2)
         self.statusbar.addWidget(self.coords_label, 1)
         self.statusbar.addPermanentWidget(self.ver_label, 1)
+        self.groupBox.prevHeight = 20
         self.ready = False
         self.posit = None
         self.end_val = 0
@@ -142,7 +142,7 @@ class GUI(QtWidgets.QMainWindow):
         self.point = QtCore.QObject()
         self.color = None
         self.loop = QtCore.QEventLoop()
-        self.oImage = QtGui.QImage(":/data/board.png")
+        self.oImage = QtGui.QImage(":/board.png")
         self.oImage.scaled(self.width(), self.height())
         self.plt = QtGui.QPalette()
         self.plt.setBrush(self.plt.Window, QtGui.QBrush(self.oImage))
@@ -192,16 +192,14 @@ class GUI(QtWidgets.QMainWindow):
         k -= 1
         self.coords_label.setText('')
 
-    def hide_group_box(self, b):
+    def hide_group_box(self):
         """Hides group box
 
-        :param b: checkbox value of the QGroupBox object
+        :param args: any value
         """
-        assert isinstance(b, bool), 'b type must be bool'
-        if b:
-            self.groupBox.setFixedHeight(211)
-        else:
-            self.groupBox.setFixedHeight(18)
+        t = self.groupBox.height()
+        self.groupBox.setFixedHeight(self.groupBox.prevHeight)
+        self.groupBox.prevHeight = t
 
     def stop(self):
         """Stop running
@@ -223,7 +221,7 @@ class GUI(QtWidgets.QMainWindow):
         self.point = QtCore.QObject()
         self.color = None
         self.loop = QtCore.QEventLoop()
-        self.oImage = QtGui.QImage(":/data/board.png")
+        self.oImage = QtGui.QImage(":/board.png")
         self.plt = QtGui.QPalette()
         self.plt.setBrush(self.plt.Window, QtGui.QBrush(self.oImage))
         self.setPalette(self.plt)
@@ -305,7 +303,7 @@ class GUI(QtWidgets.QMainWindow):
             self.point.show()
         self.update()
 
-    def closeEvent(self, *args, **kwargs):
+    def closeEvent(self, *args):
         self.stop()
         self.close()
 
@@ -318,7 +316,7 @@ class GUI(QtWidgets.QMainWindow):
             qp.drawPoint(self.posit)
             self.plt.setBrush(self.plt.Window, QtGui.QBrush(self.oImage))
             self.setPalette(self.plt)
-        self.ver_label.setText("Vertexes: {}".format(len(self.vertexes.keys())))
+        self.ver_label.setText("Vertices: {}".format(len(self.vertexes.keys())))
         self.ver_label.setStyleSheet("""color: red;
                                      font: 10pt "Verdana";""")
         self.status_label.setText("Not ready")
@@ -352,6 +350,12 @@ class GUI(QtWidgets.QMainWindow):
                                                                font: 10pt "Verdana";""")
                     except ValueError:
                         return
+        elif self.runningFlag:
+            self.ver_label.setStyleSheet("""color: green;
+                                            font: 10pt "Verdana";""")
+            self.status_label.setText("Running")
+            self.status_label.setStyleSheet("""color: green;
+                                               font: 10pt "Verdana";""")
 
 
 if __name__ == '__main__':

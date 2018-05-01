@@ -40,7 +40,7 @@ class Fractal:
         return self.x, self.y, self.vertexes[prevVer1]
 
     def draw(self):
-        """Calculates coords to move to
+        """Calculates coordinates to move to
         """
         global prevVer1
         while True:

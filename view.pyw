@@ -193,10 +193,7 @@ class GUI(QtWidgets.QMainWindow):
         self.coords_label.setText('')
 
     def hide_group_box(self):
-        """Hides group box
-
-        :param args: any value
-        """
+        """Hides and shows group box"""
         t = self.groupBox.height()
         self.groupBox.setFixedHeight(self.groupBox.prevHeight)
         self.groupBox.prevHeight = t
